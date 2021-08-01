@@ -35,6 +35,32 @@ const store: Store = {
   currentPage: 1,
   feeds: [],
 };
+class Api {
+  url: string;
+  ajax: XMLHttpRequest;
+  constructor(url: string) {
+    this.url = url;
+    this.ajax = new XMLHttpRequest();
+  }
+
+  protected getRequest<AjaxResponse>(): AjaxResponse {
+    this.ajax.open('GET', this.url, false);
+    this.ajax.send();
+    return JSON.parse(this.ajax.response);
+  }
+}
+
+class NewsFeedApi extends Api {
+  getData(): NewsFeed[] {
+    return this.getRequest<NewsFeed[]>()
+  }
+}
+
+class NewsDetailApi extends Api {
+  getData(): NewsDetail {
+    return this.getRequest<NewsDetail>();
+  }
+}
 
 function getData<AjaxResponse>(url: string): AjaxResponse {
   ajax.open('GET', url, false);
@@ -59,30 +85,8 @@ function updateView(html: string): void {
   }
 }
 
-function makeComment(comments: NewsComment[]): string {
-  const commentString = [];
-
-  for (let i = 0; i < comments.length; i++) {
-    const comment: NewsComment = comments[i];
-    commentString.push(`
-      <div style="padding-left: ${comment.level * 40}px;" class="mt-4">
-        <div class="text-gray-400">
-          <i class="fa fa-sort-up mr-2"></i>
-          <strong>${comment.user}</strong> ${comment.time_ago}
-        </div>
-        <p class="text-gray-700">${comment.content}</p>
-      </div>
-    `);
-
-    if (comment.comments.length > 0) {
-      commentString.push(makeComment(comment.comments));
-    }
-  }
-
-  return commentString.join('');
-}
-
 function newsFeed(): void {
+  const api = new NewsFeedApi(NEWS_URL);
   let newsFeed: NewsFeed[] = store.feeds;
   const newsList = [];
   let template = `
@@ -111,7 +115,7 @@ function newsFeed(): void {
   `;
 
   if (newsFeed.length === 0) {
-    newsFeed = store.feeds = makeFeeds(getData<NewsFeed[]>(NEWS_URL));
+    newsFeed = store.feeds = makeFeeds(api.getData());
   }
 
   for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
@@ -147,7 +151,8 @@ function newsFeed(): void {
 
 function newsDetail(): void {
   const id = location.hash.substr(7);
-  const newsContent = getData<NewsDetail>(CONTENT_URL.replace('@id', id))
+  const api = new NewsDetailApi(CONTENT_URL.replace('@id', id))
+  const newsContent = api.getData()
   let template = `
     <div class="bg-gray-600 min-h-screen pb-8">
       <div class="bg-white text-xl">
@@ -185,6 +190,30 @@ function newsDetail(): void {
   }
 
   updateView(template.replace('{{__comments__}}', makeComment(newsContent.comments)));
+}
+
+
+function makeComment(comments: NewsComment[]): string {
+  const commentString = [];
+
+  for (let i = 0; i < comments.length; i++) {
+    const comment: NewsComment = comments[i];
+    commentString.push(`
+      <div style="padding-left: ${comment.level * 40}px;" class="mt-4">
+        <div class="text-gray-400">
+          <i class="fa fa-sort-up mr-2"></i>
+          <strong>${comment.user}</strong> ${comment.time_ago}
+        </div>
+        <p class="text-gray-700">${comment.content}</p>
+      </div>
+    `);
+
+    if (comment.comments.length > 0) {
+      commentString.push(makeComment(comment.comments));
+    }
+  }
+
+  return commentString.join('');
 }
 
 function router(): void {
