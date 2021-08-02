@@ -5,8 +5,9 @@ export default abstract class View {
   private htmlList: string[];
 
   constructor(containerId: string, template: string) {
-    const containerElement = document.getElementById(containerId);
+    const containerElement: HTMLElement | null = document.getElementById(containerId);
     if (!containerElement) throw 'No Container Element';
+
     this.container = containerElement;
     this.template = template;
     this.renderTemplate = template;
@@ -24,11 +25,11 @@ export default abstract class View {
     this.clearHtmlList();
     return snapshot;
   };
-  protected setTemplateData(key: string, value: string): void {
-    this.renderTemplate = this.template.replace(`{{__${key}__}}`, value);
+  protected setTemplateData(key: string, value: string) {
+    this.renderTemplate = this.renderTemplate.replace(`{{__${key}__}}`, value);
   };
   private clearHtmlList(): void {
     this.htmlList = [];
   };
-  abstract render(): void;
+  abstract render(...params: string[]): void;
 };

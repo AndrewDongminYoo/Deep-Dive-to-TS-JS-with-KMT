@@ -1,12 +1,19 @@
-import { Store } from "./types";
 import Router from "./core/router";
-import NewsFeedView from "./page/news-feed-view";
-import NewsDetailView from "./page/news-detail-view";
+import { NewsFeedView, NewsDetailView } from "./page";
+import { Store } from "./types";
 
-export const store: Store = {
+const store: Store = {
   currentPage: 1,
   feeds: [],
 };
+
+declare global {
+  interface Window {
+    store: Store;
+  }
+}
+
+window.store = store;
 
 const router: Router = new Router();
 const newsFeedView = new NewsFeedView('root');
