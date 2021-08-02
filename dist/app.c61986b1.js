@@ -117,36 +117,8 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"app.ts":[function(require,module,exports) {
+})({"core/router.ts":[function(require,module,exports) {
 "use strict";
-
-var __extends = this && this.__extends || function () {
-  var _extendStatics = function extendStatics(d, b) {
-    _extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) {
-        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
-      }
-    };
-
-    return _extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-
-    _extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
 
 var __values = this && this.__values || function (o) {
   var s = typeof Symbol === "function" && Symbol.iterator,
@@ -165,131 +137,9 @@ var __values = this && this.__values || function (o) {
   throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 
-;
-var container = document.getElementById('root');
-var ajax = new XMLHttpRequest();
-var NEWS_URL = 'https://api.hnpwa.com/v0/news/1.json';
-var CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
-var store = {
-  currentPage: 1,
-  feeds: []
-}; // function applyApiMixins(targetClass: any, baseClasses: any[]): void {
-//   baseClasses.forEach((baseClass) => {
-//     Object.getOwnPropertyNames(baseClass.prototype).forEach((name) => {
-//       const descriptor = Object.getOwnPropertyDescriptor(baseClass.prototype, name);
-//       if (descriptor) {
-//         Object.defineProperty(targetClass.prototype, name, descriptor)
-//       };
-//     });
-//   });
-// };
-
-var Api =
-/** @class */
-function () {
-  function Api() {}
-
-  Api.prototype.getRequest = function (url) {
-    var ajax = new XMLHttpRequest();
-    ajax.open('GET', url, false);
-    ajax.send();
-    return JSON.parse(ajax.response);
-  };
-
-  ;
-  return Api;
-}();
-
-;
-
-var NewsFeedApi =
-/** @class */
-function (_super) {
-  __extends(NewsFeedApi, _super);
-
-  function NewsFeedApi() {
-    return _super !== null && _super.apply(this, arguments) || this;
-  }
-
-  NewsFeedApi.prototype.getData = function () {
-    return this.getRequest(NEWS_URL);
-  };
-
-  ;
-  return NewsFeedApi;
-}(Api);
-
-;
-
-var NewsDetailApi =
-/** @class */
-function (_super) {
-  __extends(NewsDetailApi, _super);
-
-  function NewsDetailApi() {
-    return _super !== null && _super.apply(this, arguments) || this;
-  }
-
-  NewsDetailApi.prototype.getData = function (id) {
-    return this.getRequest(CONTENT_URL.replace('@id', id));
-  };
-
-  ;
-  return NewsDetailApi;
-}(Api);
-
-;
-
-var View =
-/** @class */
-function () {
-  function View(containerId, template) {
-    var containerElement = document.getElementById(containerId);
-    if (!containerElement) throw 'No Container Element';
-    this.container = containerElement;
-    this.template = template;
-    this.renderTemplate = template;
-    this.htmlList = [];
-  }
-
-  ;
-
-  View.prototype.updateView = function () {
-    this.container.innerHTML = this.renderTemplate;
-    this.renderTemplate = this.template;
-  };
-
-  ;
-
-  View.prototype.addHtml = function (htmlString) {
-    this.htmlList.push(htmlString);
-  };
-
-  ;
-
-  View.prototype.getHtml = function () {
-    var snapshot = this.htmlList.join('');
-    this.clearHtmlList();
-    return snapshot;
-  };
-
-  ;
-
-  View.prototype.setTemplateData = function (key, value) {
-    this.renderTemplate = this.template.replace("{{__" + key + "__}}", value);
-  };
-
-  ;
-
-  View.prototype.clearHtmlList = function () {
-    this.htmlList = [];
-  };
-
-  ;
-  return View;
-}();
-
-;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var Router =
 /** @class */
@@ -348,6 +198,228 @@ function () {
   return Router;
 }();
 
+exports.default = Router;
+},{}],"core/view.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var View =
+/** @class */
+function () {
+  function View(containerId, template) {
+    var containerElement = document.getElementById(containerId);
+    if (!containerElement) throw 'No Container Element';
+    this.container = containerElement;
+    this.template = template;
+    this.renderTemplate = template;
+    this.htmlList = [];
+  }
+
+  ;
+
+  View.prototype.updateView = function () {
+    this.container.innerHTML = this.renderTemplate;
+    this.renderTemplate = this.template;
+  };
+
+  ;
+
+  View.prototype.addHtml = function (htmlString) {
+    this.htmlList.push(htmlString);
+  };
+
+  ;
+
+  View.prototype.getHtml = function () {
+    var snapshot = this.htmlList.join('');
+    this.clearHtmlList();
+    return snapshot;
+  };
+
+  ;
+
+  View.prototype.setTemplateData = function (key, value) {
+    this.renderTemplate = this.template.replace("{{__" + key + "__}}", value);
+  };
+
+  ;
+
+  View.prototype.clearHtmlList = function () {
+    this.htmlList = [];
+  };
+
+  ;
+  return View;
+}();
+
+exports.default = View;
+;
+},{}],"config.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CONTENT_URL = exports.NEWS_URL = void 0;
+exports.NEWS_URL = 'https://api.hnpwa.com/v0/news/1.json';
+exports.CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'; // function applyApiMixins(targetClass: any, baseClasses: any[]): void {
+//   baseClasses.forEach((baseClass) => {
+//     Object.getOwnPropertyNames(baseClass.prototype).forEach((name) => {
+//       const descriptor = Object.getOwnPropertyDescriptor(baseClass.prototype, name);
+//       if (descriptor) {
+//         Object.defineProperty(targetClass.prototype, name, descriptor)
+//       };
+//     });
+//   });
+// };
+},{}],"core/api.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NewsDetailApi = exports.NewsFeedApi = exports.Api = void 0;
+
+var config_1 = require("../config");
+
+var Api =
+/** @class */
+function () {
+  function Api() {}
+
+  Api.prototype.getRequest = function (url) {
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', url, false);
+    ajax.send();
+    return JSON.parse(ajax.response);
+  };
+
+  ;
+  return Api;
+}();
+
+exports.Api = Api;
+;
+
+var NewsFeedApi =
+/** @class */
+function (_super) {
+  __extends(NewsFeedApi, _super);
+
+  function NewsFeedApi() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  NewsFeedApi.prototype.getData = function () {
+    return this.getRequest(config_1.NEWS_URL);
+  };
+
+  ;
+  return NewsFeedApi;
+}(Api);
+
+exports.NewsFeedApi = NewsFeedApi;
+;
+
+var NewsDetailApi =
+/** @class */
+function (_super) {
+  __extends(NewsDetailApi, _super);
+
+  function NewsDetailApi() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  NewsDetailApi.prototype.getData = function (id) {
+    return this.getRequest(config_1.CONTENT_URL.replace('@id', id));
+  };
+
+  ;
+  return NewsDetailApi;
+}(Api);
+
+exports.NewsDetailApi = NewsDetailApi;
+;
+var container = document.getElementById('root');
+var ajax = new XMLHttpRequest();
+},{"../config":"config.ts"}],"page/news-feed-view.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var view_1 = __importDefault(require("../core/view"));
+
+var api_1 = require("../core/api");
+
+var app_1 = require("../app");
+
 var NewsFeedView =
 /** @class */
 function (_super) {
@@ -358,11 +430,11 @@ function (_super) {
 
     var template = "\n    <div class=\"bg-gray-600 min-h-screen\">\n      <div class=\"bg-white text-xl\">\n        <div class=\"mx-auto px-4\">\n          <div class=\"flex justify-between items-center py-6\">\n            <div class=\"flex justify-start\">\n              <h1 class=\"font-extrabold\">Hacker News</h1>\n            </div>\n            <div class=\"items-center justify-end\">\n              <a href=\"#/page/{{__prev_page__}}\" class=\"text-gray-500\">\n                Previous\n              </a>\n              <a href=\"#/page/{{__next_page__}}\" class=\"text-gray-500 ml-4\">\n                Next\n              </a>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class=\"p-4 text-2xl text-gray-700\">\n        {{__news_feed__}}\n      </div>\n    </div>\n    ";
     _this = _super.call(this, containerId, template) || this;
-    _this.api = new NewsFeedApi();
-    _this.feeds = store.feeds;
+    _this.api = new api_1.NewsFeedApi();
+    _this.feeds = app_1.store.feeds;
 
     if (_this.feeds.length === 0) {
-      _this.feeds = store.feeds = _this.api.getData();
+      _this.feeds = app_1.store.feeds = _this.api.getData();
 
       _this.makeFeeds();
     }
@@ -371,9 +443,9 @@ function (_super) {
   }
 
   NewsFeedView.prototype.render = function () {
-    store.currentPage = Number(location.hash.substr(7) || 1);
+    app_1.store.currentPage = Number(location.hash.substr(7) || 1);
 
-    for (var i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
+    for (var i = (app_1.store.currentPage - 1) * 10; i < app_1.store.currentPage * 10; i++) {
       var _a = this.feeds[i],
           read = _a.read,
           id = _a.id,
@@ -386,8 +458,8 @@ function (_super) {
     }
 
     this.setTemplateData('news_feed', this.getHtml());
-    this.setTemplateData('prev_page', String(store.currentPage > 1 ? store.currentPage - 1 : 1));
-    this.setTemplateData('next_page', String(store.currentPage + 1));
+    this.setTemplateData('prev_page', String(app_1.store.currentPage > 1 ? app_1.store.currentPage - 1 : 1));
+    this.setTemplateData('next_page', String(app_1.store.currentPage + 1));
     this.updateView();
   };
 
@@ -398,7 +470,55 @@ function (_super) {
   };
 
   return NewsFeedView;
-}(View);
+}(view_1.default);
+
+exports.default = NewsFeedView;
+},{"../core/view":"core/view.ts","../core/api":"core/api.ts","../app":"app.ts"}],"page/news-detail-view.ts":[function(require,module,exports) {
+"use strict";
+
+var __extends = this && this.__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var view_1 = __importDefault(require("../core/view"));
+
+var api_1 = require("../core/api");
+
+var app_1 = require("../app");
 
 var NewsDetailView =
 /** @class */
@@ -415,18 +535,18 @@ function (_super) {
 
   NewsDetailView.prototype.render = function () {
     var id = location.hash.substr(7);
-    var api = new NewsDetailApi();
+    var api = new api_1.NewsDetailApi();
     var newsDetail = api.getData(id);
 
-    for (var i = 0; i < store.feeds.length; i++) {
-      if (store.feeds[i].id === Number(id)) {
-        store.feeds[i].read = true;
+    for (var i = 0; i < app_1.store.feeds.length; i++) {
+      if (app_1.store.feeds[i].id === Number(id)) {
+        app_1.store.feeds[i].read = true;
         break;
       }
     }
 
     this.setTemplateData('title', newsDetail.title);
-    this.setTemplateData('currentPage', String(store.currentPage));
+    this.setTemplateData('currentPage', String(app_1.store.currentPage));
     this.setTemplateData('content', newsDetail.content);
     this.setTemplateData('comments', this.makeComment(newsDetail.comments));
     this.updateView();
@@ -446,16 +566,41 @@ function (_super) {
   };
 
   return NewsDetailView;
-}(View);
+}(view_1.default);
 
-var router = new Router();
-var newsFeedView = new NewsFeedView('root');
-var newsDetailView = new NewsDetailView('root');
+exports.default = NewsDetailView;
+},{"../core/view":"core/view.ts","../core/api":"core/api.ts","../app":"app.ts"}],"app.ts":[function(require,module,exports) {
+"use strict";
+
+var __importDefault = this && this.__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.store = void 0;
+
+var router_1 = __importDefault(require("./core/router"));
+
+var news_feed_view_1 = __importDefault(require("./page/news-feed-view"));
+
+var news_detail_view_1 = __importDefault(require("./page/news-detail-view"));
+
+exports.store = {
+  currentPage: 1,
+  feeds: []
+};
+var router = new router_1.default();
+var newsFeedView = new news_feed_view_1.default('root');
+var newsDetailView = new news_detail_view_1.default('root');
 router.setDefaultPage(newsFeedView);
 router.addRouterPath('/page/', newsFeedView);
 router.addRouterPath('/show/', newsDetailView);
 router.route();
-},{}],"../../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./core/router":"core/router.ts","./page/news-feed-view":"page/news-feed-view.ts","./page/news-detail-view":"page/news-detail-view.ts"}],"../../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
