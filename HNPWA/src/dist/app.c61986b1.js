@@ -120,23 +120,6 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"core/router.ts":[function(require,module,exports) {
 "use strict";
 
-var __values = this && this.__values || function (o) {
-  var s = typeof Symbol === "function" && Symbol.iterator,
-      m = s && o[s],
-      i = 0;
-  if (m) return m.call(o);
-  if (o && typeof o.length === "number") return {
-    next: function next() {
-      if (o && i >= o.length) o = void 0;
-      return {
-        value: o && o[i++],
-        done: !o
-      };
-    }
-  };
-  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-};
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -182,8 +165,6 @@ function () {
   };
 
   Router.prototype.route = function () {
-    var e_1, _a;
-
     var routePath = location.hash;
 
     if (routePath === '' && this.defaultRoute) {
@@ -191,33 +172,21 @@ function () {
       return;
     }
 
-    try {
-      for (var _b = __values(this.routeTable), _c = _b.next(); !_c.done; _c = _b.next()) {
-        var routeInfo = _c.value;
+    for (var _i = 0, _a = this.routeTable; _i < _a.length; _i++) {
+      var routeInfo = _a[_i];
 
-        if (routePath.indexOf(routeInfo.path) >= 0) {
-          if (routeInfo.params) {
-            var parseParams = routePath.match(routeInfo.params);
+      if (routePath.indexOf(routeInfo.path) >= 0) {
+        if (routeInfo.params) {
+          var parseParams = routePath.match(routeInfo.params);
 
-            if (parseParams) {
-              routeInfo.page.render.apply(null, [parseParams[1]]);
-            }
-          } else {
-            routeInfo.page.render();
+          if (parseParams) {
+            routeInfo.page.render.apply(null, [parseParams[1]]);
           }
-
-          return;
+        } else {
+          routeInfo.page.render();
         }
-      }
-    } catch (e_1_1) {
-      e_1 = {
-        error: e_1_1
-      };
-    } finally {
-      try {
-        if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-      } finally {
-        if (e_1) throw e_1.error;
+
+        return;
       }
     }
   };
@@ -324,18 +293,26 @@ var Api =
 /** @class */
 function () {
   function Api(url) {
-    this.ajax = new XMLHttpRequest();
+    this.xhr = new XMLHttpRequest();
     this.url = url;
   }
 
-  Api.prototype.getRequest = function (cb) {
+  Api.prototype.getRequestWithXHR = function (cb) {
     var _this = this;
 
-    this.ajax.open('GET', this.url);
-    this.ajax.addEventListener('load', function () {
-      cb(JSON.parse(_this.ajax.response));
+    this.xhr.open('GET', this.url);
+    this.xhr.addEventListener('load', function () {
+      cb(JSON.parse(_this.xhr.response));
     });
-    this.ajax.send();
+    this.xhr.send();
+  };
+
+  Api.prototype.getRequestWithPromise = function (cb) {
+    fetch(this.url).then(function (response) {
+      return response.json();
+    }).then(cb).catch(function () {
+      console.error('데이타를 불러오지 못했습니다.');
+    });
   };
 
   return Api;
@@ -352,8 +329,12 @@ function (_super) {
     return _super.call(this, url) || this;
   }
 
-  NewsFeedApi.prototype.getData = function (cb) {
-    return this.getRequest(cb);
+  NewsFeedApi.prototype.getDataWithXHR = function (cb) {
+    return this.getRequestWithXHR(cb);
+  };
+
+  NewsFeedApi.prototype.getDataWithPromise = function (cb) {
+    return this.getRequestWithPromise(cb);
   };
 
   return NewsFeedApi;
@@ -370,8 +351,12 @@ function (_super) {
     return _super.call(this, url) || this;
   }
 
-  NewsDetailApi.prototype.getData = function (cb) {
-    return this.getRequest(cb);
+  NewsDetailApi.prototype.getDataWithXHR = function (cb) {
+    return this.getRequestWithXHR(cb);
+  };
+
+  NewsDetailApi.prototype.getDataWithPromise = function (cb) {
+    return this.getRequestWithPromise(cb);
   };
 
   return NewsDetailApi;
@@ -455,23 +440,23 @@ function (_super) {
 
     _this.render = function (id) {
       var api = new api_1.NewsDetailApi(config_1.CONTENT_URL.replace('@id', id));
+      api.getDataWithPromise(function (data) {
+        var title = data.title,
+            content = data.content,
+            comments = data.comments;
 
-      var _a = api.getData(),
-          title = _a.title,
-          content = _a.content,
-          comments = _a.comments;
+        _this.store.makeRead(Number(id));
 
-      _this.store.makeRead(Number(id));
+        _this.setTemplateData('currentPage', _this.store.currentPage.toString());
 
-      _this.setTemplateData('currentPage', _this.store.currentPage.toString());
+        _this.setTemplateData('title', title);
 
-      _this.setTemplateData('title', title);
+        _this.setTemplateData('content', content);
 
-      _this.setTemplateData('content', content);
+        _this.setTemplateData('comments', _this.makeComment(comments));
 
-      _this.setTemplateData('comments', _this.makeComment(comments));
-
-      _this.updateView();
+        _this.updateView();
+      });
     };
 
     _this.store = store;
@@ -559,6 +544,18 @@ function (_super) {
 
       _this.store.currentPage = Number(page);
 
+      if (!_this.store.hasFeeds) {
+        _this.api.getDataWithPromise(function (feeds) {
+          _this.store.setFeeds(feeds);
+
+          _this.renderView();
+        });
+      }
+
+      _this.renderView();
+    };
+
+    _this.renderView = function () {
       for (var i = (_this.store.currentPage - 1) * 10; i < _this.store.currentPage * 10; i++) {
         var _a = _this.store.getFeed(i),
             id = _a.id,
@@ -583,11 +580,6 @@ function (_super) {
 
     _this.store = store;
     _this.api = new api_1.NewsFeedApi(config_1.NEWS_URL);
-
-    if (!_this.store.hasFeeds) {
-      _this.store.setFeeds(_this.api.getData());
-    }
-
     return _this;
   }
 
@@ -780,7 +772,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "4320" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "12257" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
