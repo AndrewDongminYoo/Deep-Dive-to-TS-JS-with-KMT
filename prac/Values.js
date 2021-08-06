@@ -7,7 +7,8 @@ let age = {
   }
 }
 
-a = new Boolean();// Boolean(false)
+age['Andrew hello']()
+abc = new Boolean();// Boolean(false)
 const b = null;         // null
 const c = undefined;    // undefined
 const d = new Number(); // Number()
@@ -26,19 +27,19 @@ console.log(typeof g)  // object
 function plusAge(age) {
   return age + 1
 }
-plusAge(30);
+const thirtyOne = plusAge(30);
 // 31
-plusAge({})
+plusAge({});
 // "[object Object]1"
-plusAge(false)
+plusAge(false);
 // 1
-plusAge("30")
+plusAge("30");
 // "301"
-plusAge([])
+plusAge([]);
 // "1"
-plusAge(null)
+plusAge(null);
 // 1
-plusAge(undefined)
+plusAge(undefined);
 // NaN
 
-console.log("hello world")
+console.log("hello")

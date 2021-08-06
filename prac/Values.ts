@@ -93,7 +93,7 @@ create(null); // 성공
 // create(undefined); // 오류
 console.log(warnUser())
 // This is my warning message => undefined
-console.log(warnUser) // function wartnUser() {....
+console.log(warnUser) // function warnUser() {....
 console.log(typeof warnUser) // "function"
 
 // Type assertions (타입 단언: 컴파일러에게 이 타입이 확실하다 단언함)
