@@ -9,6 +9,7 @@ function calculateRectArea(width, height) {
 
 class Circle {
   #radius;
+  // 타입스크립트가 아니라 자바스크립트로도 private 속성을 가질 수 있게 된 모던 문법
   constructor(radius) {
     this.#radius = radius
   }

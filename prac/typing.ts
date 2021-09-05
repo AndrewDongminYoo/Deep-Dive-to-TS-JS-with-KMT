@@ -15,18 +15,18 @@ console.log(makeObject());
 const jsonString = `
   {
     "name": "Yoo Dong Min",
-    "age": "28",
+    "age": 28,
     "bloodType": "B"
   }
 `;
 
 const myJson = JSON.parse(jsonString);
-const myObject = {...myJson, id: v4()}
-console.log(myJson.bloodType)
-console.log(myObject.id)
-const newJson = JSON.stringify(myObject,null,'\t')
-console.log(newJson)
-console.log(myObject)
+const myObject = {...myJson, id: v4()};
+console.log(myJson.bloodType);
+console.log(myObject.id);
+const newJson = JSON.stringify(myObject,null,'\t');
+console.log(newJson);
+console.log(myObject);
 
 try {
   const myJSON = JSON.parse(jsonString);

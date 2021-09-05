@@ -30,24 +30,24 @@ export default class MakeObject extends HeaderListData {
       .map((notUse, index) => this.toObject(index))
 }
 
-const [userinfo, setUserinfo] = useState({
-  iam: "익명의.지은이",
-  selfLetter: "안녕하세요 익명의 지은이입니다."
-});
+// const [userinfo, setUserinfo] = useState({
+//   iam: "익명의.지은이",
+//   selfLetter: "안녕하세요 익명의 지은이입니다."
+// });
 
-useEffect(() => {
-  function getUserId() {
-    firebase_db.ref(`users/${myitem.user_uid}`)
-      .on('value', (snapshot) => {
-        let user = snapshot.val();
-        if (user) {
-          setUserinfo(userinfo);
-        }
-      })
-  }
+// useEffect(() => {
+//   function getUserId() {
+//     firebase_db.ref(`users/${myitem.user_uid}`)
+//       .on('value', (snapshot) => {
+//         let user = snapshot.val();
+//         if (user) {
+//           setUserinfo(userinfo);
+//         }
+//       })
+//   }
 
-}, []);
+// }, []);
 
-const { iam, selfLetter } = userState;
-console.log(iam);
-console.log(selfLetter);
+// const { iam, selfLetter } = userState;
+// console.log(iam);
+// console.log(selfLetter);

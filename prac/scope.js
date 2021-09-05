@@ -1,24 +1,24 @@
-myName = 'Yoo'
+let myName = 'Yoo'
 foo(); // hoisting!!!
 
 function foo() {
   let x = 10;
 
-  console.log(myName)
+  console.log(myName);
   bar(); // hoisting!!!
-  // zoo(); // no hoisting!!!
+  // zoo(); // Cannot access 'zoo' before initialization!!!
 
   function bar() {
     let y = 20;
 
-    console.log(x)
-    console.log(myName)
+    console.log(x);
+    console.log(myName);
   }
 
   const zoo = function () {
     let z = 30;
-    console.log(y);
-    console.log(x);
+    console.log(y);  // y is not defined
+    console.log(x);  // 10
   }
 
   if (x === 10) {
@@ -29,7 +29,8 @@ function foo() {
 
   if (x === 10) {
     x = 12;
-    console.log(x)
+    console.log(x);
   }
-  console.log(x)
+  console.log(x);
+  // zoo();
 }

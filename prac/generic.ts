@@ -20,7 +20,8 @@ function pipeObjectOne<T>(object: T): T {
   return object;
 }
 
-// const po1 = pipeObjectOne<User>({ id: 1, name: "andrew", zipCode: 50213})
+const po1 = pipeObjectOne({ id: 1, name: "andrew", zipCode: 50213})
+// const po2 = pipeObjectOne<User>({ id: 1, name: "andrew", zipCode: 50213})
 
 class State<S, Config={}> {
   private _state: S;
@@ -50,6 +51,11 @@ console.log(s1Data.address, s1Data.zipCode, s1.config.active)
 function getOwnProperty<Type, key extends keyof Type>(obj: Type, key: key) {
   return obj[key]
 }
+
+let o = { a: 1, b:2, c:3, d:4, e: 5 };
+
+getOwnProperty(o, "a");
+// getOwnProperty(o, "m")
 
 interface KeyPair<T, V> {
   key: T;

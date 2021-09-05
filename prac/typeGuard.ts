@@ -7,7 +7,7 @@ function doubleTypeFunction(a: number | string) {
 }
 
 function foo(a?: number | null) {
-  // if (a === null) return;
+  if (a === null) return;
   console.log(a?.valueOf())
   // will return undefined
 }
@@ -25,3 +25,4 @@ function isFoo(arg: any): arg is Foo {
 
 // TypeGuard can't fix this action
 console.log(isFoo({ foo: 'ok', common: 'wow', active: false}))
+console.log(isFoo({ common: 'wow'}))
