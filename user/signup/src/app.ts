@@ -1,5 +1,5 @@
 import template from './app.template';
-import { CantContainWhitespace, CantStartNumber, MinimumLengthLimit } from './constant';
+import { CantContainWhitespace, CantStartNumber, MinimumLengthLimit, EmailValidationRule } from './constant';
 import { AnyObject } from './types';
 import { TextField, PasswordField, AddressField } from './views';
 
@@ -16,25 +16,25 @@ export default class App {
     this.fields = [];
 
     this.initialize();
-    
+
     setInterval(this.validFieldMonitor, 1000/30);
   }
 
   private initialize = () => {
-    const nameField = new TextField('#required-fields', { 
+    const nameField = new TextField('#required-fields', {
       id: 'name', label: '이름', type: 'text', placeholder: '이름을 입력해주세요', require: true,
     });
 
-    const idField = new TextField('#required-fields', { 
+    const idField = new TextField('#required-fields', {
       id: 'id', label: '아이디', type: 'text', placeholder: '아이디를 입력해주세요', require: true,
     });
 
-    const emailField = new TextField('#required-fields', { 
+    const emailField = new TextField('#required-fields', {
       id: 'email', label: '이메일', type: 'email', placeholder: '이메일을 입력해주세요', require: true,
     });
-    
-    const passwordField = new PasswordField('#required-fields', { 
-      id: 'password', label: '비밀번호', placeholder: '비밀번호를 입력해주세요', 
+
+    const passwordField = new PasswordField('#required-fields', {
+      id: 'password', label: '비밀번호', placeholder: '비밀번호를 입력해주세요',
     });
 
     const addressField = new AddressField('#optional-fields', {
@@ -46,6 +46,7 @@ export default class App {
     idField.addValidateRule(MinimumLengthLimit(3));
 
     emailField.addValidateRule(CantContainWhitespace);
+    emailField.addValidateRule(EmailValidationRule);
 
     this.fields.push(nameField);
     this.fields.push(idField);
