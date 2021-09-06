@@ -23,3 +23,9 @@ export const MinimumLengthLimit = (limit: number): ValidateRule => ({
   match: true,
   message: `최소한 ${limit}글자 이상 이어야 합니다.`,
 });
+
+export const EmailValidationRule: ValidateRule = {
+  rule: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  match: true,
+  message: '올바르지 않은 이메일입니다.'
+}

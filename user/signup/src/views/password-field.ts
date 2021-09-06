@@ -7,7 +7,7 @@ enum StrongLevel {
   None = 0,
   Light,
   Medium,
-  Havey,
+  Heavy,
 }
 
 type Props = {
@@ -55,7 +55,7 @@ export default class PasswordField {
 
   private onChange = (e: Event) => {
     const { value, id } = e.target as HTMLInputElement;
-  
+
     if (id === this.data.id) {
       this.updated = true;
       this.data.text = value;
@@ -67,7 +67,7 @@ export default class PasswordField {
     document.querySelector(this.container)?.addEventListener('change', this.onChange);
   }
 
-  private buildData = () => { 
+  private buildData = () => {
     let strongLevel = -1;
     const isInvalid: ValidateRule | null = this.validate();
 
@@ -88,7 +88,7 @@ export default class PasswordField {
     }
 
     return {
-      ...this.data, 
+      ...this.data,
       updated: this.updated,
       valid: this.updated ? !isInvalid : true,
       strongMessage: strongLevel < 0 ? '' : StrongMessage[strongLevel],
